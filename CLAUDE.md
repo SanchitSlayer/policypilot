@@ -58,7 +58,7 @@ policypilot/
 ## Phases
 0. Scaffolding + local setup (docker compose, /health, Alembic with `vector` extension, Next.js layout) — done
 1. Document ingestion (PDF → page-aware chunks → embeddings → pgvector) — done
-2. RAG chat with citations, SSE streaming, multi-provider LLM layer
+2. RAG chat with citations, SSE streaming, multi-provider LLM layer — done
 3. Next.js frontend (Chat + Documents)
 4. Contract Review agent (tool calling)
 5. MongoDB logging, conversation history, Admin dashboard

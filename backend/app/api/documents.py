@@ -4,7 +4,6 @@ from typing import Annotated
 from fastapi import (
     APIRouter,
     BackgroundTasks,
-    Depends,
     File,
     Form,
     HTTPException,
@@ -12,11 +11,8 @@ from fastapi import (
     UploadFile,
     status,
 )
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from app.core.config import Settings, get_settings
-from app.core.db import get_db_session, get_sessionmaker
-from app.llm.embeddings import EmbeddingError, EmbeddingProvider, get_embedding_provider
+from app.api.deps import EmbedderDep, SessionDep, SessionFactoryDep, SettingsDep
 from app.models import DocType
 from app.schemas.document import DocumentDetail, DocumentOut
 from app.services import documents as document_service
@@ -24,21 +20,6 @@ from app.services.ingestion import ingest_document
 from app.services.pdf import is_pdf
 
 router = APIRouter(prefix="/documents", tags=["documents"])
-
-SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
-SettingsDep = Annotated[Settings, Depends(get_settings)]
-
-
-def get_embedder() -> EmbeddingProvider:
-    try:
-        return get_embedding_provider()
-    except EmbeddingError as exc:
-        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)) from exc
-
-
-def get_session_factory() -> async_sessionmaker[AsyncSession]:
-    """Session factory for background work that outlives the request session."""
-    return get_sessionmaker()
 
 
 async def read_pdf_upload(file: UploadFile, max_bytes: int) -> bytes:
@@ -68,8 +49,8 @@ async def upload_document(
     background_tasks: BackgroundTasks,
     session: SessionDep,
     settings: SettingsDep,
-    embedder: Annotated[EmbeddingProvider, Depends(get_embedder)],
-    session_factory: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_factory)],
+    embedder: EmbedderDep,
+    session_factory: SessionFactoryDep,
     file: Annotated[UploadFile, File(description="PDF file")],
     doc_type: Annotated[DocType, Form()] = DocType.POLICY,
     title: Annotated[str | None, Form(max_length=500)] = None,

@@ -17,6 +17,8 @@ dependencies = [
     "pypdf>=4.2",
     "tiktoken>=0.7",
     "openai>=1.40",
+    "anthropic>=0.40",
+    "google-genai>=1.0",
 ]
 
 [project.optional-dependencies]

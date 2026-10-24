@@ -10,6 +10,7 @@ class Settings(BaseSettings):
         env_file=(".env", "../.env"),
         env_file_encoding="utf-8",
         extra="ignore",
+        env_ignore_empty=True,
     )
 
     app_name: str = "PolicyPilot API"
@@ -31,6 +32,16 @@ class Settings(BaseSettings):
     anthropic_chat_model: str = ""
     gemini_chat_model: str = ""
     default_llm_provider: str = "fake"
+    llm_max_output_tokens: int = 1024
+    llm_timeout_seconds: float = 60.0
+    # Sent only to providers/models that accept it; leave unset for reasoning models.
+    chat_temperature: float | None = None
+
+    # Retrieval and chat
+    retrieval_top_k: int = 6
+    retrieval_min_score: float = 0.2
+    chat_history_turns: int = 4
+    citation_snippet_chars: int = 240
 
     # Embeddings
     embedding_provider: str = "openai"

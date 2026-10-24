@@ -12,7 +12,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from alembic import command
-from app.api.documents import get_embedder, get_session_factory
+from app.api.deps import get_embedder, get_session_factory
 from app.core.config import get_settings
 from app.core.db import get_db_session
 from app.llm.embeddings import FakeEmbeddingProvider
