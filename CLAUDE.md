@@ -59,7 +59,7 @@ policypilot/
 0. Scaffolding + local setup (docker compose, /health, Alembic with `vector` extension, Next.js layout) — done
 1. Document ingestion (PDF → page-aware chunks → embeddings → pgvector) — done
 2. RAG chat with citations, SSE streaming, multi-provider LLM layer — done
-3. Next.js frontend (Chat + Documents)
+3. Next.js frontend (Chat + Documents) — done
 4. Contract Review agent (tool calling)
 5. MongoDB logging, conversation history, Admin dashboard
 6. Testing, CI, RAG evaluation
@@ -69,4 +69,5 @@ policypilot/
 - Everything: `docker compose up --build` (backend :8000, frontend :3000, postgres :5432, mongo :27017)
 - Backend tests (no DB needed): `cd backend && pytest`
 - Migrations: `cd backend && alembic upgrade head` (the backend container runs this on start)
-- Frontend checks: `cd frontend && npm run lint && npx tsc --noEmit`
+- Frontend checks: `cd frontend && npm run lint && npm run typecheck && npm test` (Vitest 3.x: Node 20 is installed locally)
+- After adding npm deps: `docker compose up -d --build -V frontend` (node_modules is an anonymous volume)

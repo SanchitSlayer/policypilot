@@ -22,7 +22,8 @@ from app.services.conversations import ConversationStore
 from app.services.retrieval import RetrievedChunk, retrieve
 
 # Short follow-ups ("what about companies?") are retrieved together with the previous question.
-FOLLOW_UP_MAX_WORDS = 8
+# Kept low: a full question of 6+ words should be searched on its own.
+FOLLOW_UP_MAX_WORDS = 5
 
 
 @dataclass

@@ -2,7 +2,7 @@
 
 PolicyPilot is an AI compliance copilot for B2B compliance, ops and legal teams. Upload policy and regulatory PDFs (for example the RBI KYC Master Direction or internal SOPs), ask questions in plain language, and get streamed answers with page-level citations, using OpenAI, Anthropic Claude or Google Gemini per request. A tool-calling Contract Review agent checks a contract's clauses against your stored policies and returns a structured compliance checklist, and an admin dashboard tracks requests, tokens, latency and cost per provider.
 
-> Status: in development (Phases 0–2 done: ingestion and RAG chat API). See [CLAUDE.md](CLAUDE.md) for the roadmap.
+> Status: in development (Phases 0–3 done: ingestion, RAG chat API and web UI). See [CLAUDE.md](CLAUDE.md) for the roadmap.
 
 ## Tech stack
 
@@ -25,6 +25,13 @@ docker compose up --build
 | Health   | http://localhost:8000/health   |
 
 The backend container runs `alembic upgrade head` on start (pgvector extension, documents and chunks tables).
+
+### Use the web app
+
+Open http://localhost:3000:
+
+- **Documents**: drag and drop PDFs (policy or contract); the table shows pages, chunks and live processing status.
+- **Chat**: pick a provider (OpenAI, Claude, Gemini, or Fake for offline use), optionally limit the search to some documents, and ask. Answers stream in with clickable `[n]` citations; the Sources panel shows the document, page and exact passage.
 
 ### Ingest documents
 
@@ -71,5 +78,5 @@ python3.12 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 ```bash
 cd frontend
 npm install
-npm run lint && npm run typecheck
+npm run lint && npm run typecheck && npm test   # ESLint, tsc, Vitest + Testing Library
 ```
