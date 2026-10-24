@@ -224,3 +224,15 @@ async def test_admin_usage_rejects_bad_ranges(
 async def test_unique_conversation_index_exists(mongo_db: AsyncIOMotorDatabase) -> None:
     indexes = await mongo_db["conversations"].index_information()
     assert any(spec.get("unique") for spec in indexes.values())
+
+
+async def test_chat_with_persist_false_is_not_saved_to_history(
+    mongo_client: AsyncClient, mongo_db: AsyncIOMotorDatabase
+) -> None:
+    response = await mongo_client.post(
+        "/chat", json={"question": "proof of address documents", "persist": False}
+    )
+
+    assert response.status_code == 200 and response.json()["citations"]
+    assert (await mongo_client.get("/conversations")).json() == []
+    assert await mongo_db["llm_calls"].count_documents({"feature": "chat"}) == 1, "still logged"

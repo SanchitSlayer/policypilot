@@ -3,7 +3,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R] /Count 5 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
@@ -12,7 +12,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
 endobj
 5 0 obj
-<< /Length 2543 >>
+<< /Length 1280 >>
 stream
 BT
 /F1 10 Tf
@@ -21,55 +21,148 @@ BT
 (NORTHWIND BANK LIMITED) Tj T*
 (INTERNAL KYC AND CUSTOMER DATA POLICY \(FICTIONAL SAMPLE, VERSION 3.2\)) Tj T*
 () Tj T*
-(1. Purpose and scope. This policy sets the minimum Know Your Customer \(KYC\) and customer data) Tj T*
-(requirements for Northwind Bank and for every vendor that processes customer data on its) Tj T*
-(behalf. Vendor contracts must not permit practices weaker than this policy.) Tj T*
+(1. Purpose and scope. This policy sets the minimum Know Your Customer \(KYC\), anti-money) Tj T*
+(laundering and customer data requirements for Northwind Bank and for every vendor that) Tj T*
+(processes customer data on its behalf. Vendor contracts must not permit practices weaker than) Tj T*
+(this policy.) Tj T*
 () Tj T*
-(2. Customer identification and proof of address. Address must be verified using an officially) Tj T*
-(valid document \(OVD\): passport, driving licence, voter identity card, or proof of possession of) Tj T*
-(an Aadhaar number. A customer's self-declaration of address is not acceptable as proof of) Tj T*
-(address under any circumstances.) Tj T*
+(2. Definitions. An officially valid document \(OVD\) is a passport, driving licence, voter) Tj T*
+(identity card, job card issued by NREGA, or proof of possession of an Aadhaar number. A) Tj T*
+(beneficial owner of a company is any natural person who owns more than 10 percent of its shares) Tj T*
+(or capital. A politically exposed person \(PEP\) is an individual entrusted with a prominent) Tj T*
+(public function, such as a head of state, senior politician or senior judicial official.) Tj T*
 () Tj T*
-(3. Handling of Aadhaar numbers. Neither the Bank nor any vendor may store a customer's full) Tj T*
+(3. Roles. The Principal Officer, a member of senior management, is responsible for monitoring) Tj T*
+(transactions and reporting to the Financial Intelligence Unit \(FIU-IND\). The Designated) Tj T*
+(Director, appointed by the Board, is responsible for overall compliance with this policy.) Tj T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 1102 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(4. Customer acceptance. No account may be opened in an anonymous or fictitious name. No account) Tj T*
+(may be opened where customer due diligence cannot be completed because the customer does not) Tj T*
+(cooperate or does not provide the required documents.) Tj T*
+() Tj T*
+(5. Customer identification and proof of address. Address must be verified using an officially) Tj T*
+(valid document. A customer's self-declaration of address is not acceptable as proof of address) Tj T*
+(under any circumstances. A utility bill not older than two months may be accepted as a deemed) Tj T*
+(OVD for a limited period, and the customer must then submit an OVD with the current address) Tj T*
+(within three months.) Tj T*
+() Tj T*
+(6. Video-based customer identification \(V-CIP\). Customers may be identified through a live) Tj T*
+(video call conducted by a trained Bank official. The customer's live location must be geo-) Tj T*
+(tagged and must be within India. The video recording and the audit trail must be stored) Tj T*
+(securely and retained like other KYC records.) Tj T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 959 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(7. Handling of Aadhaar numbers. Neither the Bank nor any vendor may store a customer's full) Tj T*
 (Aadhaar number. The first eight digits must be redacted or masked before any copy of an Aadhaar) Tj T*
-(document is stored.) Tj T*
+(document is stored. Offline Aadhaar XML files used for verification must not be more than three) Tj T*
+(days old.) Tj T*
 () Tj T*
-(4. Record retention. KYC records, identification documents and records of transactions must be) Tj T*
-(preserved for at least five years after the business relationship with the customer has ended) Tj T*
-(or the account has been closed, whichever is later. Records must not be destroyed earlier.) Tj T*
+(8. Risk categorisation. Every customer is classified as low, medium or high risk. Politically) Tj T*
+(exposed persons, non-resident customers and customers with complex ownership structures are) Tj T*
+(classified as high risk. Risk categories are reviewed at least once every six months.) Tj T*
 () Tj T*
-(5. Periodic updation of KYC. KYC must be updated at least once every two years for high-risk) Tj T*
+(9. Enhanced due diligence. Accounts of politically exposed persons require approval from senior) Tj T*
+(management before they are opened. For all high-risk customers the Bank must establish the) Tj T*
+(source of funds and source of wealth, and monitor transactions more closely.) Tj T*
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 895 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(10. Periodic updation of KYC. KYC must be updated at least once every two years for high-risk) Tj T*
 (customers, once every eight years for medium-risk customers and once every ten years for low-) Tj T*
-(risk customers.) Tj T*
+(risk customers. Customers must receive at least three reminders before the due date. If KYC is) Tj T*
+(not updated within 30 days of the due date, the account may be partially frozen.) Tj T*
 () Tj T*
-(6. Consent and data sharing. Customer data may be shared with a third party only with the) Tj T*
+(11. Record retention. KYC records and identification documents must be preserved for at least) Tj T*
+(five years after the business relationship with the customer has ended or the account has been) Tj T*
+(closed, whichever is later. Records of transactions must be preserved for at least five years) Tj T*
+(from the date of the transaction. Records must not be destroyed earlier and must be made) Tj T*
+(available to competent authorities on request.) Tj T*
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 1388 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(12. Regulatory reporting. Cash transaction reports for cash transactions above Rs. 10 lakh must) Tj T*
+(be filed with FIU-IND every month, by the 15th day of the following month. A suspicious) Tj T*
+(transaction report must be filed within seven working days of concluding that a transaction is) Tj T*
+(suspicious.) Tj T*
+() Tj T*
+(13. Consent and data sharing. Customer data may be shared with a third party only with the) Tj T*
 (customer's explicit, informed consent and only for the purpose stated at the time of consent.) Tj T*
 (Customer data must never be used for marketing or shared with marketing partners without a) Tj T*
 (separate opt-in consent.) Tj T*
 () Tj T*
-(7. Vendor oversight and audit. Vendors must give the Bank and the Reserve Bank of India) Tj T*
+(14. Vendors and outsourcing. Vendors must give the Bank and the Reserve Bank of India) Tj T*
 (unrestricted access to premises, systems and records for audit and inspection. Vendors must not) Tj T*
-(sub-contract any processing of customer data without the Bank's prior written approval.) Tj T*
-() Tj T*
-(8. Security incidents. Vendors must report any security incident or data breach affecting) Tj T*
-(customer data to the Bank within six hours of detection.) Tj T*
-() Tj T*
-(9. Data localisation. All customer data, including backups, must be stored only on systems) Tj T*
+(sub-contract any processing of customer data without the Bank's prior written approval. Vendors) Tj T*
+(must report any security incident or data breach affecting customer data to the Bank within six) Tj T*
+(hours of detection. All customer data, including backups, must be stored only on systems) Tj T*
 (located in India.) Tj T*
 () Tj T*
+(15. Training and review. All staff complete AML and KYC training every year. The Board reviews) Tj T*
+(this policy at least once a year.) Tj T*
 ET
 endstream
 endobj
 xref
-0 6
+0 14
 0000000000 65535 f 
 0000000009 00000 n 
 0000000058 00000 n 
-0000000115 00000 n 
-0000000185 00000 n 
-0000000311 00000 n 
+0000000141 00000 n 
+0000000211 00000 n 
+0000000337 00000 n 
+0000001669 00000 n 
+0000001795 00000 n 
+0000002949 00000 n 
+0000003075 00000 n 
+0000004085 00000 n 
+0000004213 00000 n 
+0000005160 00000 n 
+0000005288 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<< /Size 14 /Root 1 0 R >>
 startxref
-2906
+6729
 %%EOF

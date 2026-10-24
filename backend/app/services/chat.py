@@ -34,6 +34,7 @@ class PreparedChat:
     provider: LLMProvider
     sources: list[RetrievedChunk]
     messages: list[ChatMessage]
+    persist: bool = True
 
 
 def sse(event: str, data: dict[str, object]) -> str:
@@ -82,7 +83,9 @@ class ChatService:
             *history,
             ChatMessage(role="user", content=build_rag_user_message(request.question, sources)),
         ]
-        return PreparedChat(conversation_id, request.question, provider, sources, messages)
+        return PreparedChat(
+            conversation_id, request.question, provider, sources, messages, request.persist
+        )
 
     @staticmethod
     def _retrieval_query(question: str, history: list[ChatMessage]) -> str:
@@ -154,13 +157,14 @@ class ChatService:
     async def _finish(self, prepared: PreparedChat, response: LLMResponse) -> ChatResponse:
         answer = strip_invalid_citations(response.text, len(prepared.sources)).strip()
         citations = build_citations(answer, prepared.sources, self._settings.citation_snippet_chars)
-        await self._store.append_turn(
-            prepared.conversation_id,
-            question=prepared.question,
-            answer=answer,
-            citations=citations,
-            provider=response.provider,
-        )
+        if prepared.persist:
+            await self._store.append_turn(
+                prepared.conversation_id,
+                question=prepared.question,
+                answer=answer,
+                citations=citations,
+                provider=response.provider,
+            )
         return ChatResponse(
             conversation_id=prepared.conversation_id,
             answer=answer,

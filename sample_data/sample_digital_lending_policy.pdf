@@ -1,0 +1,122 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 690 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(NORTHWIND BANK LIMITED) Tj T*
+(DIGITAL LENDING POLICY \(FICTIONAL SAMPLE, VERSION 1.4\)) Tj T*
+() Tj T*
+(1. Scope. This policy applies to all loans sourced or serviced through digital lending apps) Tj T*
+(\(DLAs\), whether operated by the Bank or by a lending service provider \(LSP\) engaged by it.) Tj T*
+() Tj T*
+(2. Disbursal and repayment. Loan amounts must be disbursed directly into the bank account of) Tj T*
+(the borrower. Disbursal through a pass-through account or pool account of any LSP or third) Tj T*
+(party is prohibited. Repayments must be made directly into the Bank's account, without passing) Tj T*
+(through any account of an LSP.) Tj T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 763 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(3. Key Fact Statement. Before the loan agreement is executed, the borrower must receive a Key) Tj T*
+(Fact Statement \(KFS\) in a standard format. The KFS must state the annual percentage rate \(APR\),) Tj T*
+(which is the all-inclusive cost of the loan, the recovery mechanism, the details of the) Tj T*
+(grievance redressal officer, and the cooling-off period.) Tj T*
+() Tj T*
+(4. Cooling-off period. Borrowers may exit a digital loan during a cooling-off period by) Tj T*
+(repaying the principal and the proportionate APR, without any penalty. The cooling-off period) Tj T*
+(is at least three days for loans with a tenor of seven days or more, and at least one day for) Tj T*
+(loans with a tenor of less than seven days.) Tj T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 830 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(5. Fees and charges. No fee or charge that is not mentioned in the KFS may be charged to the) Tj T*
+(borrower. Fees payable to an LSP are paid by the Bank and must not be charged to the borrower) Tj T*
+(directly.) Tj T*
+() Tj T*
+(6. Borrower data. Digital lending apps may collect only the data needed for the loan, with the) Tj T*
+(borrower's explicit consent. Apps must not access the borrower's contacts, media files or call) Tj T*
+(logs. One-time access to the camera, microphone and location is allowed only for onboarding.) Tj T*
+(Borrowers may withdraw consent and ask for their data to be deleted.) Tj T*
+() Tj T*
+(7. Credit limits. A borrower's credit limit must not be increased automatically. Any increase) Tj T*
+(requires the borrower's explicit consent, which must be recorded.) Tj T*
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 842 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(8. Grievance redressal. Every DLA and LSP must have a nodal grievance redressal officer whose) Tj T*
+(contact details are shown in the app and on the website. Complaints must be resolved within 30) Tj T*
+(days. If a complaint is not resolved within 30 days, the borrower may escalate it to the RBI) Tj T*
+(Ombudsman under the Integrated Ombudsman Scheme.) Tj T*
+() Tj T*
+(9. Recovery practices. Recovery agents must not harass or intimidate borrowers. The name and) Tj T*
+(contact details of the recovery agent must be shared with the borrower before the agent) Tj T*
+(contacts them. Recovery calls may be made only between 8 a.m. and 7 p.m.) Tj T*
+() Tj T*
+(10. Credit reporting. Every loan disbursed through a DLA must be reported to the credit) Tj T*
+(information companies, regardless of its tenor.) Tj T*
+ET
+endstream
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000134 00000 n 
+0000000204 00000 n 
+0000000330 00000 n 
+0000001071 00000 n 
+0000001197 00000 n 
+0000002011 00000 n 
+0000002137 00000 n 
+0000003018 00000 n 
+0000003146 00000 n 
+trailer
+<< /Size 12 /Root 1 0 R >>
+startxref
+4040
+%%EOF

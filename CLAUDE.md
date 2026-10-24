@@ -62,12 +62,14 @@ policypilot/
 3. Next.js frontend (Chat + Documents) — done
 4. Contract Review agent (tool calling) — done
 5. MongoDB logging, conversation history, Admin dashboard — done
-6. Testing, CI, RAG evaluation
+6. Testing, CI, RAG evaluation — done
 7. Cloud Run deploy, README, demo polish
 
-## Dev commands
-- Everything: `docker compose up --build` (backend :8000, frontend :3000, postgres :5432, mongo :27017)
-- Backend tests (no DB needed): `cd backend && pytest`
-- Migrations: `cd backend && alembic upgrade head` (the backend container runs this on start)
-- Frontend checks: `cd frontend && npm run lint && npm run typecheck && npm test` (Vitest 3.x: Node 20 is installed locally)
+## Dev commands (Makefile; everything runs in the compose containers)
+- `make up` / `make down` / `make logs`
+- `make seed` loads the fictional demo corpus (`FORCE=1` re-ingests; needed after changing EMBEDDING_PROVIDER)
+- `make test` (backend pytest with coverage + frontend Vitest), `make lint`, `make format`
+- `make eval PROVIDERS="openai anthropic gemini"` RAG evaluation (results in eval/results/)
+- Host alternatives: `cd backend && .venv/bin/pytest`; `cd frontend && npm run lint && npm run typecheck && npm test` (Vitest 3.x: Node 20 locally)
 - After adding npm deps: `docker compose up -d --build -V frontend` (node_modules is an anonymous volume)
+- The dev machine's disk is nearly full: avoid unnecessary image rebuilds; `docker builder prune -af` clears build cache. Never `docker volume prune` (other projects' volumes live there).
