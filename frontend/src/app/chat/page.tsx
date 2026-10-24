@@ -1,15 +1,21 @@
 "use client";
 
-import { MessageSquarePlus, ShieldCheck, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { History, MessageSquarePlus, ShieldCheck, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { DocumentFilter, ProviderSelect } from "@/components/chat/ChatControls";
 import { CitationsPanel } from "@/components/chat/CitationsPanel";
 import { Composer } from "@/components/chat/Composer";
+import { ConversationList } from "@/components/chat/ConversationList";
 import { MessageList } from "@/components/chat/MessageList";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ErrorBanner } from "@/components/ui/ErrorBanner";
 import { useChat } from "@/hooks/useChat";
+import { useConversations } from "@/hooks/useConversations";
 import { useDocuments } from "@/hooks/useDocuments";
 import { useStoredProvider } from "@/hooks/useStoredProvider";
+import { getConversation } from "@/lib/api";
+import type { ConversationSummary } from "@/lib/types";
 
 const EXAMPLES = [
   "What documents are valid as proof of address under KYC rules?",
@@ -22,7 +28,17 @@ export default function ChatPage() {
   const [documentIds, setDocumentIds] = useState<string[]>([]);
   const { documents } = useDocuments();
   const readyDocuments = useMemo(() => documents.filter((d) => d.status === "ready"), [documents]);
-  const { messages, streaming, send, stop, retry, reset } = useChat({ provider, documentIds });
+  const history = useConversations();
+  const refreshHistory = history.refresh;
+  const onAnswered = useCallback(() => void refreshHistory(), [refreshHistory]);
+  const { messages, conversationId, streaming, send, stop, retry, reset, load } = useChat({
+    provider,
+    documentIds,
+    onAnswered,
+  });
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<ConversationSummary | null>(null);
+  const [historyError, setHistoryError] = useState<string | null>(null);
 
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [activeSource, setActiveSource] = useState<number | null>(null);
@@ -55,7 +71,42 @@ export default function ChatPage() {
     reset();
     setSelectedMessageId(null);
     setActiveSource(null);
+    setHistoryOpen(false);
   };
+
+  const openConversation = async (id: string) => {
+    try {
+      load(await getConversation(id));
+      setHistoryError(null);
+      setHistoryOpen(false);
+    } catch (err) {
+      setHistoryError(err instanceof Error ? err.message : "Could not open the conversation.");
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    try {
+      await history.remove(pendingDelete.conversation_id);
+      if (pendingDelete.conversation_id === conversationId) newConversation();
+      setHistoryError(null);
+    } catch (err) {
+      setHistoryError(err instanceof Error ? err.message : "Could not delete the conversation.");
+    } finally {
+      setPendingDelete(null);
+    }
+  };
+
+  const historyList = (
+    <ConversationList
+      conversations={history.conversations}
+      activeId={conversationId}
+      loading={history.loading}
+      error={history.error}
+      onOpen={(id) => void openConversation(id)}
+      onDelete={setPendingDelete}
+    />
+  );
 
   return (
     <div className="-mx-4 -my-6 flex h-[calc(100%+3rem)] flex-col md:-mx-10 md:-my-8 md:h-[calc(100%+4rem)]">
@@ -65,6 +116,16 @@ export default function ChatPage() {
           <p className="hidden text-xs text-slate-500 sm:block">Answers cite the exact document and page.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setHistoryOpen(true)}
+            disabled={streaming}
+            className="flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 xl:hidden"
+          >
+            <History aria-hidden className="h-4 w-4" />
+            <span className="hidden sm:inline">History</span>
+            <span className="sr-only sm:hidden">History</span>
+          </button>
           <DocumentFilter
             documents={readyDocuments}
             selected={documentIds}
@@ -86,7 +147,20 @@ export default function ChatPage() {
       </header>
 
       <div className="flex min-h-0 flex-1">
+        <aside
+          aria-label="Conversation history"
+          className="hidden w-64 shrink-0 overflow-y-auto border-r border-slate-200 bg-white p-3 xl:block"
+        >
+          <h2 className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-slate-500">History</h2>
+          {historyList}
+        </aside>
+
         <section className="flex min-w-0 flex-1 flex-col">
+          {historyError && (
+            <div className="px-4 pt-3 md:px-8">
+              <ErrorBanner message={historyError} />
+            </div>
+          )}
           <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8">
             {messages.length === 0 ? (
               <EmptyState hasDocuments={readyDocuments.length > 0} onPick={(q) => void send(q)} />
@@ -117,6 +191,45 @@ export default function ChatPage() {
           />
         </aside>
       </div>
+
+      {historyOpen && (
+        <div className="fixed inset-0 z-40 xl:hidden" role="dialog" aria-modal="true" aria-label="Conversation history">
+          <button
+            type="button"
+            aria-label="Close history"
+            className="absolute inset-0 bg-slate-900/30"
+            onClick={() => setHistoryOpen(false)}
+          />
+          <div className="absolute inset-y-0 left-0 w-80 max-w-[85vw] overflow-y-auto bg-white p-3 shadow-xl">
+            <div className="mb-2 flex items-center justify-between px-2">
+              <h2 className="text-sm font-semibold text-slate-900">History</h2>
+              <button
+                type="button"
+                onClick={() => setHistoryOpen(false)}
+                aria-label="Close"
+                className="rounded p-1 text-slate-500 hover:bg-slate-100"
+              >
+                <X aria-hidden className="h-4 w-4" />
+              </button>
+            </div>
+            {historyList}
+          </div>
+        </div>
+      )}
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete conversation?"
+        description={
+          <>
+            <span className="font-medium text-slate-900">{pendingDelete?.title}</span> and its
+            answers will be removed from history.
+          </>
+        }
+        confirmLabel="Delete"
+        onConfirm={() => void confirmDelete()}
+        onCancel={() => setPendingDelete(null)}
+      />
 
       {sheetOpen && activeSource !== null && panelMessage && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label="Source">

@@ -1,0 +1,30 @@
+# Estimated prices in USD per 1 million tokens, used for the cost column on the Admin page.
+# Edit freely; the API reloads this file on restart (path: PRICING_FILE).
+#
+# Lookup: exact model name first, then the longest entry that the model name starts with
+# (so "gpt-5.4-mini-2026-03-17" uses "gpt-5.4-mini"). Models not listed are logged with
+# cost 0 and cost_known=false, so missing prices are visible instead of silently wrong.
+#
+# Prices change often. Entries marked VERIFY are placeholders: check the provider pricing
+# pages (openai.com/api/pricing, anthropic.com/pricing, ai.google.dev/pricing) before quoting.
+
+models:
+  # OpenAI
+  gpt-4o-mini:            { input: 0.15, output: 0.60 }
+  gpt-4o:                 { input: 2.50, output: 10.00 }
+  gpt-5.4-mini:           { input: 0.25, output: 2.00 }   # VERIFY
+  text-embedding-3-small: { input: 0.02, output: 0.0 }
+  text-embedding-3-large: { input: 0.13, output: 0.0 }
+
+  # Anthropic
+  claude-haiku-4-5:       { input: 1.00, output: 5.00 }
+  claude-haiku-5-5:       { input: 1.00, output: 5.00 }   # VERIFY
+  claude-sonnet-4-5:      { input: 3.00, output: 15.00 }
+
+  # Google
+  gemini-2.5-flash:       { input: 0.30, output: 2.50 }
+  gemini-2.5-pro:         { input: 1.25, output: 10.00 }
+
+  # Offline providers used in development and tests
+  fake-model:             { input: 0.0, output: 0.0 }
+  fake-hashed-bow:        { input: 0.0, output: 0.0 }

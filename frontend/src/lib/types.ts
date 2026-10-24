@@ -162,3 +162,63 @@ export interface ReviewOut {
   completed_at: string | null;
   report: ReviewReport | null;
 }
+
+// Conversation history (GET /conversations, GET /conversations/{id})
+
+export interface StoredMessage {
+  role: "user" | "assistant";
+  content: string;
+  citations: Citation[];
+  provider: string | null;
+  created_at: string;
+}
+
+export interface ConversationSummary {
+  conversation_id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  message_count: number;
+}
+
+export interface ConversationDetail extends ConversationSummary {
+  messages: StoredMessage[];
+}
+
+// Usage dashboard (GET /admin/usage)
+
+export interface UsageStats {
+  requests: number;
+  errors: number;
+  error_rate: number;
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  cost_usd: number;
+  unpriced_requests: number;
+  avg_latency_ms: number | null;
+  p50_latency_ms: number | null;
+  p95_latency_ms: number | null;
+}
+
+export interface UsageBreakdown extends UsageStats {
+  key: string;
+}
+
+export interface DailyUsage {
+  date: string;
+  requests: number;
+  errors: number;
+  cost_usd: number;
+  total_tokens: number;
+  by_provider: Record<string, number>;
+}
+
+export interface UsageSummary {
+  start: string;
+  end: string;
+  totals: UsageStats;
+  by_provider: UsageBreakdown[];
+  by_feature: UsageBreakdown[];
+  daily: DailyUsage[];
+}

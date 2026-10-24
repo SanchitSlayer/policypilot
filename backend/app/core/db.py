@@ -34,7 +34,9 @@ async def get_db_session() -> AsyncIterator[AsyncSession]:
 def get_mongo_client() -> AsyncIOMotorClient:
     settings = get_settings()
     timeout_ms = int(settings.db_check_timeout_seconds * 1000)
-    return AsyncIOMotorClient(settings.mongo_url, serverSelectionTimeoutMS=timeout_ms)
+    return AsyncIOMotorClient(
+        settings.mongo_url, serverSelectionTimeoutMS=timeout_ms, tz_aware=True
+    )
 
 
 def get_mongo_db() -> AsyncIOMotorDatabase:

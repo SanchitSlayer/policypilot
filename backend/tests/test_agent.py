@@ -10,7 +10,7 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from app.api.chat import get_provider_factory
+from app.api.deps import get_provider_factory
 from app.core.config import Settings, get_settings
 from app.llm.base import ChatMessage, LLMResponse, ProviderNotConfiguredError, ToolCall
 from app.llm.embeddings import FakeEmbeddingProvider

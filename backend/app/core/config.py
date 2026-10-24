@@ -1,6 +1,7 @@
 """Application settings, loaded from environment variables (and a local .env file)."""
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -42,6 +43,10 @@ class Settings(BaseSettings):
     retrieval_min_score: float = 0.2
     chat_history_turns: int = 4
     citation_snippet_chars: int = 240
+
+    # Observability
+    pricing_file: str = str(Path(__file__).resolve().parents[2] / "config" / "pricing.yaml")
+    conversation_title_chars: int = 80
 
     # Contract review agent
     max_agent_steps: int = 25

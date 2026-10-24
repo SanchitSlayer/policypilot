@@ -16,6 +16,7 @@ from app.llm.prompts import (
     RAG_SYSTEM_PROMPT,
     build_rag_user_message,
 )
+from app.llm.usage import UsageLogger, with_usage_logging
 from app.schemas.chat import ChatRequest, ChatResponse, ChatUsage, SourceOut
 from app.services.citations import build_citations, strip_invalid_citations
 from app.services.conversations import ConversationStore
@@ -47,8 +48,10 @@ class ChatService:
         store: ConversationStore,
         settings: Settings,
         provider_factory: Callable[[str], LLMProvider],
+        usage_logger: UsageLogger,
     ) -> None:
         self._provider_factory = provider_factory
+        self._usage_logger = usage_logger
         self._session = session
         self._embedder = embedder
         self._store = store
@@ -57,9 +60,14 @@ class ChatService:
     async def prepare(self, request: ChatRequest) -> PreparedChat:
         """Resolve the provider, load history and retrieve sources. Raises
         ProviderNotConfiguredError before doing any work if the provider is unusable."""
-        provider = self._provider_factory(request.provider or self._settings.default_llm_provider)
+        provider = with_usage_logging(
+            self._provider_factory(request.provider or self._settings.default_llm_provider),
+            feature="chat",
+            usage_logger=self._usage_logger,
+            prompt_version=PROMPT_VERSION,
+        )
         conversation_id = request.conversation_id or uuid.uuid4().hex
-        history = await self._store.get_messages(conversation_id)
+        history = await self._store.get_history(conversation_id)
         history = history[-2 * self._settings.chat_history_turns :]
 
         sources = await retrieve(
@@ -146,12 +154,12 @@ class ChatService:
     async def _finish(self, prepared: PreparedChat, response: LLMResponse) -> ChatResponse:
         answer = strip_invalid_citations(response.text, len(prepared.sources)).strip()
         citations = build_citations(answer, prepared.sources, self._settings.citation_snippet_chars)
-        await self._store.append(
+        await self._store.append_turn(
             prepared.conversation_id,
-            [
-                ChatMessage(role="user", content=prepared.question),
-                ChatMessage(role="assistant", content=answer),
-            ],
+            question=prepared.question,
+            answer=answer,
+            citations=citations,
+            provider=response.provider,
         )
         return ChatResponse(
             conversation_id=prepared.conversation_id,

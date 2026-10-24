@@ -1,21 +1,26 @@
-from collections.abc import Callable
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 
-from app.api.deps import EmbedderDep, SessionDep, SettingsDep
-from app.llm.base import LLMError, LLMProvider, ProviderNotConfiguredError
-from app.llm.registry import get_provider
+from app.api.deps import (
+    EmbedderDep,
+    MongoDep,
+    ProviderFactoryDep,
+    SessionDep,
+    SettingsDep,
+    UsageLoggerDep,
+)
+from app.llm.base import LLMError, ProviderNotConfiguredError
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.services.chat import ChatService, PreparedChat
-from app.services.conversations import ConversationStore, get_conversation_store
+from app.services.conversations import ConversationStore, MongoConversationStore
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 
-def get_provider_factory() -> Callable[[str], LLMProvider]:
-    return get_provider
+def get_conversation_store(db: MongoDep, settings: SettingsDep) -> ConversationStore:
+    return MongoConversationStore(db, title_chars=settings.conversation_title_chars)
 
 
 def get_chat_service(
@@ -23,9 +28,10 @@ def get_chat_service(
     embedder: EmbedderDep,
     settings: SettingsDep,
     store: Annotated[ConversationStore, Depends(get_conversation_store)],
-    provider_factory: Annotated[Callable[[str], LLMProvider], Depends(get_provider_factory)],
+    provider_factory: ProviderFactoryDep,
+    usage_logger: UsageLoggerDep,
 ) -> ChatService:
-    return ChatService(session, embedder, store, settings, provider_factory)
+    return ChatService(session, embedder, store, settings, provider_factory, usage_logger)
 
 
 ChatServiceDep = Annotated[ChatService, Depends(get_chat_service)]

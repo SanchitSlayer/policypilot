@@ -61,7 +61,7 @@ policypilot/
 2. RAG chat with citations, SSE streaming, multi-provider LLM layer — done
 3. Next.js frontend (Chat + Documents) — done
 4. Contract Review agent (tool calling) — done
-5. MongoDB logging, conversation history, Admin dashboard
+5. MongoDB logging, conversation history, Admin dashboard — done
 6. Testing, CI, RAG evaluation
 7. Cloud Run deploy, README, demo polish
 

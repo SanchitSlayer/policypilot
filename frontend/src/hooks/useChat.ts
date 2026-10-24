@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 
 import { streamChat } from "@/lib/api";
-import type { ChatUsage, Citation, ProviderName } from "@/lib/types";
+import type { ChatUsage, Citation, ConversationDetail, ProviderName } from "@/lib/types";
 
 export type MessageStatus = "streaming" | "done" | "stopped" | "error";
 
@@ -21,7 +21,14 @@ export interface ChatMessage {
 
 const newId = () => crypto.randomUUID();
 
-export function useChat({ provider, documentIds }: { provider: ProviderName; documentIds: string[] }) {
+type UseChatOptions = {
+  provider: ProviderName;
+  documentIds: string[];
+  /** Called after an answer finishes and has been saved (e.g. to refresh the history list). */
+  onAnswered?: (conversationId: string) => void;
+};
+
+export function useChat({ provider, documentIds, onAnswered }: UseChatOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [streaming, setStreaming] = useState(false);
@@ -60,8 +67,10 @@ export function useChat({ provider, documentIds }: { provider: ProviderName; doc
               setConversationId(event.conversation_id);
               patch(assistantId, (m) => ({ ...m, citations: event.citations }));
             },
-            onDone: (event) =>
-              patch(assistantId, (m) => ({ ...m, content: event.answer, usage: event.usage, status: "done" })),
+            onDone: (event) => {
+              patch(assistantId, (m) => ({ ...m, content: event.answer, usage: event.usage, status: "done" }));
+              onAnswered?.(event.conversation_id);
+            },
           },
           controller.signal,
         );
@@ -78,7 +87,7 @@ export function useChat({ provider, documentIds }: { provider: ProviderName; doc
         setStreaming(false);
       }
     },
-    [provider, documentIds, conversationId, patch],
+    [provider, documentIds, conversationId, patch, onAnswered],
   );
 
   const stop = useCallback(() => abortRef.current?.abort(), []);
@@ -101,5 +110,20 @@ export function useChat({ provider, documentIds }: { provider: ProviderName; doc
     setConversationId(null);
   }, []);
 
-  return { messages, conversationId, streaming, send, stop, retry, reset };
+  /** Show a saved conversation and continue it. */
+  const load = useCallback((conversation: ConversationDetail) => {
+    abortRef.current?.abort();
+    setConversationId(conversation.conversation_id);
+    setMessages(
+      conversation.messages.map((m) => ({
+        id: newId(),
+        role: m.role,
+        content: m.content,
+        citations: m.citations,
+        status: "done" as const,
+      })),
+    );
+  }, []);
+
+  return { messages, conversationId, streaming, send, stop, retry, reset, load };
 }

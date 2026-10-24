@@ -8,8 +8,10 @@ from pathlib import Path
 from sqlalchemy import select
 
 from app.core.config import get_settings
-from app.core.db import close_connections, get_sessionmaker
+from app.core.db import close_connections, get_mongo_db, get_sessionmaker
 from app.llm.embeddings import EmbeddingError, get_embedding_provider
+from app.llm.pricing import get_pricing
+from app.llm.usage import LoggedEmbeddingProvider, MongoUsageLogger
 from app.models import DocType, Document, DocumentStatus
 from app.services.documents import create_document
 from app.services.ingestion import ingest_document
@@ -57,7 +59,11 @@ async def ingest_file(path: Path, doc_type: DocType, force: bool) -> str:
         document.id,
         data,
         session_factory=session_factory,
-        embedder=get_embedding_provider(),
+        embedder=LoggedEmbeddingProvider(
+            get_embedding_provider(),
+            usage_logger=MongoUsageLogger(get_mongo_db()),
+            pricing=get_pricing(),
+        ),
         settings=get_settings(),
     )
     async with session_factory() as session:

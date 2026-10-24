@@ -3,6 +3,8 @@ import type {
   ChatRequest,
   ChatResponse,
   CitationsEvent,
+  ConversationDetail,
+  ConversationSummary,
   DocType,
   DocumentDetail,
   DocumentOut,
@@ -12,6 +14,7 @@ import type {
   ReviewOut,
   ReviewRequest,
   TokenEvent,
+  UsageSummary,
 } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(
@@ -160,3 +163,18 @@ export async function streamChat(
 export const startReview = (body: ReviewRequest) => request<ReviewCreated>("/review", json(body));
 
 export const getReview = (id: string) => request<ReviewOut>(`/review/${id}`);
+
+// --- Conversation history -----------------------------------------------------------------
+
+export const listConversations = () => request<ConversationSummary[]>("/conversations");
+
+export const getConversation = (id: string) =>
+  request<ConversationDetail>(`/conversations/${encodeURIComponent(id)}`);
+
+export const deleteConversation = (id: string) =>
+  request<null>(`/conversations/${encodeURIComponent(id)}`, { method: "DELETE" });
+
+// --- Admin --------------------------------------------------------------------------------
+
+export const getUsage = (from: string, to: string) =>
+  request<UsageSummary>(`/admin/usage?${new URLSearchParams({ from, to })}`);

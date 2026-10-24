@@ -7,7 +7,8 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from app.api.chat import get_provider_factory
+from app.api.chat import get_conversation_store
+from app.api.deps import get_provider_factory
 from app.core.config import Settings, get_settings
 from app.llm.base import ProviderNotConfiguredError
 from app.llm.embeddings import FakeEmbeddingProvider
@@ -15,7 +16,7 @@ from app.llm.fake_provider import FakeProvider
 from app.llm.prompts import NO_ANSWER_TEXT
 from app.main import app
 from app.models import Document, DocumentStatus
-from app.services.conversations import InMemoryConversationStore, get_conversation_store
+from app.services.conversations import InMemoryConversationStore
 from app.services.ingestion import ingest_document
 from app.services.retrieval import retrieve
 from app.utils.simple_pdf import make_pdf

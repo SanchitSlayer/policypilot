@@ -1,15 +1,20 @@
 import uuid
-from collections.abc import Callable
-from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.api.chat import get_provider_factory
-from app.api.deps import EmbedderDep, SessionDep, SessionFactoryDep, SettingsDep
-from app.llm.base import LLMProvider, ProviderNotConfiguredError
+from app.api.deps import (
+    EmbedderDep,
+    ProviderFactoryDep,
+    SessionDep,
+    SessionFactoryDep,
+    SettingsDep,
+    UsageLoggerDep,
+)
+from app.llm.base import ProviderNotConfiguredError
 from app.llm.prompts import REVIEW_PROMPT_VERSION
+from app.llm.usage import with_usage_logging
 from app.models import DocType, Document, DocumentStatus, Review, ReviewStatus
 from app.schemas.review import (
     FindingOut,
@@ -23,8 +28,6 @@ from app.services.agent import run_review_job
 
 router = APIRouter(prefix="/review", tags=["contract review"])
 
-ProviderFactoryDep = Annotated[Callable[[str], LLMProvider], Depends(get_provider_factory)]
-
 
 @router.post("", response_model=ReviewCreated, status_code=status.HTTP_202_ACCEPTED)
 async def start_review(
@@ -35,6 +38,7 @@ async def start_review(
     embedder: EmbedderDep,
     settings: SettingsDep,
     provider_factory: ProviderFactoryDep,
+    usage_logger: UsageLoggerDep,
 ) -> ReviewCreated:
     """Start a contract review job; poll GET /review/{review_id} for progress and the report."""
     contract = await session.get(Document, request.document_id)
@@ -51,7 +55,12 @@ async def start_review(
             detail=f"The contract is not ready yet (status: {contract.status}).",
         )
     try:
-        provider = provider_factory(request.provider or settings.default_llm_provider)
+        provider = with_usage_logging(
+            provider_factory(request.provider or settings.default_llm_provider),
+            feature="review",
+            usage_logger=usage_logger,
+            prompt_version=REVIEW_PROMPT_VERSION,
+        )
     except ProviderNotConfiguredError as exc:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 

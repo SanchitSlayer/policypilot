@@ -2,7 +2,7 @@
 
 PolicyPilot is an AI compliance copilot for B2B compliance, ops and legal teams. Upload policy and regulatory PDFs (for example the RBI KYC Master Direction or internal SOPs), ask questions in plain language, and get streamed answers with page-level citations, using OpenAI, Anthropic Claude or Google Gemini per request. A tool-calling Contract Review agent checks a contract's clauses against your stored policies and returns a structured compliance checklist, and an admin dashboard tracks requests, tokens, latency and cost per provider.
 
-> Status: in development (Phases 0–4 done: ingestion, RAG chat, web UI and contract review agent). See [CLAUDE.md](CLAUDE.md) for the roadmap.
+> Status: in development (Phases 0–5 done: ingestion, RAG chat, web UI, contract review agent, usage dashboard). See [CLAUDE.md](CLAUDE.md) for the roadmap.
 
 ## Tech stack
 
@@ -52,6 +52,13 @@ curl -F "file=@../sample_data/sample_internal_kyc_data_policy.pdf" -F "doc_type=
 curl -F "file=@../sample_data/sample_vendor_kyc_agreement.pdf" -F "doc_type=contract" http://localhost:8000/documents
 ```
 
+### Usage dashboard and history
+
+Every LLM and embedding call goes through one wrapper (`app/llm/usage.py`) that writes a record to MongoDB `llm_calls`: feature (chat / review / embedding), provider, model, tokens, latency, estimated cost, success or error, and prompt version. Prompts and answers are never logged. Costs come from the editable table in [`backend/config/pricing.yaml`](backend/config/pricing.yaml); models missing from it are counted as "unpriced" rather than guessed.
+
+- **Admin** page: KPI tiles (requests, tokens, est. cost, p95 latency, error rate), requests per day by provider, latency p50/p95 by provider, cost by provider, and breakdown tables; 7/30/90-day presets or a custom range. API: `GET /admin/usage?from=YYYY-MM-DD&to=YYYY-MM-DD`.
+- **Chat history** is stored in MongoDB `conversations` with citations; reopen or delete past conversations from the Chat page. API: `GET /conversations`, `GET /conversations/{id}`, `DELETE /conversations/{id}`.
+
 ### Ingest documents
 
 Embeddings use OpenAI by default (`OPENAI_API_KEY`); set `EMBEDDING_PROVIDER=fake` to run fully offline.
@@ -84,7 +91,7 @@ Answers cite sources inline as `[1]`, `[2]`; each citation maps to a document ti
 
 ### Backend tests
 
-Tests use fake embeddings and a fake LLM, so no API keys are needed. Database tests run against a `policypilot_test` database on the compose Postgres and are skipped if it is not running.
+Tests use fake embeddings and a fake LLM, so no API keys are needed. Database tests run against `policypilot_test` databases on the compose Postgres and MongoDB and are skipped if those are not running.
 
 ```bash
 cd backend
