@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -12,6 +12,7 @@ from app.api.deps import (
     SettingsDep,
     UsageLoggerDep,
 )
+from app.core.rate_limit import limiter, review_limit
 from app.llm.base import ProviderNotConfiguredError
 from app.llm.prompts import REVIEW_PROMPT_VERSION
 from app.llm.usage import with_usage_logging
@@ -30,8 +31,10 @@ router = APIRouter(prefix="/review", tags=["contract review"])
 
 
 @router.post("", response_model=ReviewCreated, status_code=status.HTTP_202_ACCEPTED)
+@limiter.limit(review_limit)
 async def start_review(
-    request: ReviewRequest,
+    request: Request,
+    body: ReviewRequest,
     background_tasks: BackgroundTasks,
     session: SessionDep,
     session_factory: SessionFactoryDep,
@@ -41,7 +44,7 @@ async def start_review(
     usage_logger: UsageLoggerDep,
 ) -> ReviewCreated:
     """Start a contract review job; poll GET /review/{review_id} for progress and the report."""
-    contract = await session.get(Document, request.document_id)
+    contract = await session.get(Document, body.document_id)
     if contract is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Document not found.")
     if contract.doc_type != DocType.CONTRACT:
@@ -56,7 +59,7 @@ async def start_review(
         )
     try:
         provider = with_usage_logging(
-            provider_factory(request.provider or settings.default_llm_provider),
+            provider_factory(body.provider or settings.default_llm_provider),
             feature="review",
             usage_logger=usage_logger,
             prompt_version=REVIEW_PROMPT_VERSION,

@@ -1,0 +1,20 @@
+# Builds the production frontend image on Cloud Build. NEXT_PUBLIC_API_URL is baked into the
+# browser bundle, so it is passed as a build argument:
+#
+#   gcloud builds submit frontend --config deploy/cloudbuild.frontend.yaml \
+#     --substitutions _IMAGE=$IMAGE/frontend:$TAG,_API_URL=$API_URL
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --target=prod
+      - --build-arg=NEXT_PUBLIC_API_URL=${_API_URL}
+      - --tag=${_IMAGE}
+      - .
+images:
+  - ${_IMAGE}
+substitutions:
+  _IMAGE: ""
+  _API_URL: ""
+options:
+  dynamicSubstitutions: true

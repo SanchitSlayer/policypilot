@@ -28,7 +28,9 @@ services:
       retries: 10
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      target: dev
     env_file:
       - path: .env
         required: false
@@ -55,7 +57,9 @@ services:
       retries: 10
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      target: dev
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
       WATCHPACK_POLLING: "true"

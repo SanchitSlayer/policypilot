@@ -7,12 +7,14 @@ from fastapi import (
     File,
     Form,
     HTTPException,
+    Request,
     Response,
     UploadFile,
     status,
 )
 
 from app.api.deps import EmbedderDep, SessionDep, SessionFactoryDep, SettingsDep
+from app.core.rate_limit import limiter, upload_limit
 from app.models import DocType
 from app.schemas.document import DocumentDetail, DocumentOut
 from app.services import documents as document_service
@@ -45,7 +47,9 @@ async def read_pdf_upload(file: UploadFile, max_bytes: int) -> bytes:
 
 
 @router.post("", response_model=DocumentOut, status_code=status.HTTP_202_ACCEPTED)
+@limiter.limit(upload_limit)
 async def upload_document(
+    request: Request,
     background_tasks: BackgroundTasks,
     session: SessionDep,
     settings: SettingsDep,
