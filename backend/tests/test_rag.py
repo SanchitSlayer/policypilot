@@ -18,7 +18,7 @@ from app.models import Document, DocumentStatus
 from app.services.conversations import InMemoryConversationStore, get_conversation_store
 from app.services.ingestion import ingest_document
 from app.services.retrieval import retrieve
-from tests.pdf_factory import make_pdf
+from app.utils.simple_pdf import make_pdf
 
 ADDRESS_PAGE = (
     "Proof of address. Officially valid documents for proof of address are the passport, "

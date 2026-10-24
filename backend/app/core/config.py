@@ -43,6 +43,11 @@ class Settings(BaseSettings):
     chat_history_turns: int = 4
     citation_snippet_chars: int = 240
 
+    # Contract review agent
+    max_agent_steps: int = 25
+    agent_timeout_seconds: float = 300.0
+    agent_max_clauses: int = 30
+
     # Embeddings
     embedding_provider: str = "openai"
     embedding_model: str = ""

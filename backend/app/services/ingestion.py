@@ -10,9 +10,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.core.config import Settings
 from app.llm.embeddings import EmbeddingProvider
-from app.models import Chunk, Document, DocumentStatus
+from app.models import Chunk, Document, DocumentPage, DocumentStatus
 from app.services.chunking import TextChunk, chunk_pages
-from app.services.pdf import extract_pages
+from app.services.pdf import PageText, extract_pages
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ async def embed_in_batches(
 
 async def build_chunks(
     pdf_bytes: bytes, embedder: EmbeddingProvider, settings: Settings
-) -> tuple[int, list[TextChunk], list[list[float]]]:
+) -> tuple[int, list[PageText], list[TextChunk], list[list[float]]]:
     num_pages, pages = await asyncio.to_thread(extract_pages, pdf_bytes)
     if not pages:
         raise IngestionError(
@@ -53,7 +53,7 @@ async def build_chunks(
     vectors = await embed_in_batches(
         embedder, [c.content for c in chunks], settings.embedding_batch_size
     )
-    return num_pages, chunks, vectors
+    return num_pages, pages, chunks, vectors
 
 
 async def ingest_document(
@@ -66,12 +66,19 @@ async def ingest_document(
 ) -> None:
     """Process one uploaded PDF and mark the document ready or failed. Never raises."""
     try:
-        num_pages, chunks, vectors = await build_chunks(pdf_bytes, embedder, settings)
+        num_pages, pages, chunks, vectors = await build_chunks(pdf_bytes, embedder, settings)
         async with session_factory() as session:
             document = await session.get(Document, document_id)
             if document is None:  # deleted while processing
                 return
             await session.execute(delete(Chunk).where(Chunk.document_id == document_id))
+            await session.execute(
+                delete(DocumentPage).where(DocumentPage.document_id == document_id)
+            )
+            session.add_all(
+                DocumentPage(document_id=document_id, page_number=p.page_number, text=p.text)
+                for p in pages
+            )
             session.add_all(
                 Chunk(
                     document_id=document_id,

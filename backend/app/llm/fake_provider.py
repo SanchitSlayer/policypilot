@@ -4,6 +4,7 @@ import re
 from collections.abc import AsyncIterator, Iterable
 
 from app.llm.base import ChatMessage, ChatStream, LLMError, LLMProvider, LLMResponse, ToolSpec
+from app.llm.fake_agent import fake_agent_step
 from app.llm.prompts import NO_ANSWER_TEXT
 
 _SOURCE_RE = re.compile(
@@ -28,8 +29,9 @@ def fake_rag_answer(user_message: str) -> str:
 
 
 class FakeProvider(LLMProvider):
-    """With no script, answers RAG prompts deterministically from the sources it was given.
-    With a `script`, returns the scripted responses in order (used to test the agent loop)."""
+    """Without a script: answers RAG prompts from the sources it was given, and drives tool
+    calls with a deterministic offline agent (see fake_agent.py).
+    With a `script`: returns the scripted responses in order (used to test the agent loop)."""
 
     name = "fake"
 
@@ -87,4 +89,17 @@ class FakeProvider(LLMProvider):
         tools: list[ToolSpec],
         system: str | None = None,
     ) -> LLMResponse:
-        return self._next(messages, system)
+        if self._script is not None:
+            return self._next(messages, system)
+        self.calls.append(list(messages))
+        text, tool_calls = fake_agent_step(messages)
+        return LLMResponse(
+            text=text,
+            input_tokens=sum(_count_tokens(m.content) for m in messages),
+            output_tokens=_count_tokens(text) + 10 * len(tool_calls),
+            latency_ms=1.0,
+            model=self.model,
+            provider=self.name,
+            tool_calls=tool_calls,
+            stop_reason="tool_use" if tool_calls else "end_turn",
+        )

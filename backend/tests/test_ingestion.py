@@ -11,7 +11,7 @@ from app.llm.embeddings import FakeEmbeddingProvider
 from app.main import app
 from app.models import Chunk, Document, DocumentStatus
 from app.services.ingestion import ingest_document
-from tests.pdf_factory import make_pdf
+from app.utils.simple_pdf import make_pdf
 
 KYC_PAGE = (
     "Customer Due Diligence. Regulated entities shall verify the identity of every customer "

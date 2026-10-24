@@ -38,6 +38,18 @@ class Document(Base):
     )
 
 
+class DocumentPage(Base):
+    """Clean text of one page; used to split contracts into clauses (chunks overlap)."""
+
+    __tablename__ = "document_pages"
+
+    document_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("documents.id", ondelete="CASCADE"), primary_key=True
+    )
+    page_number: Mapped[int] = mapped_column(Integer, primary_key=True)
+    text: Mapped[str] = mapped_column(Text)
+
+
 class Chunk(Base):
     __tablename__ = "chunks"
     __table_args__ = (

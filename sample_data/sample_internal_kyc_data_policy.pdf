@@ -1,0 +1,75 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 2543 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(NORTHWIND BANK LIMITED) Tj T*
+(INTERNAL KYC AND CUSTOMER DATA POLICY \(FICTIONAL SAMPLE, VERSION 3.2\)) Tj T*
+() Tj T*
+(1. Purpose and scope. This policy sets the minimum Know Your Customer \(KYC\) and customer data) Tj T*
+(requirements for Northwind Bank and for every vendor that processes customer data on its) Tj T*
+(behalf. Vendor contracts must not permit practices weaker than this policy.) Tj T*
+() Tj T*
+(2. Customer identification and proof of address. Address must be verified using an officially) Tj T*
+(valid document \(OVD\): passport, driving licence, voter identity card, or proof of possession of) Tj T*
+(an Aadhaar number. A customer's self-declaration of address is not acceptable as proof of) Tj T*
+(address under any circumstances.) Tj T*
+() Tj T*
+(3. Handling of Aadhaar numbers. Neither the Bank nor any vendor may store a customer's full) Tj T*
+(Aadhaar number. The first eight digits must be redacted or masked before any copy of an Aadhaar) Tj T*
+(document is stored.) Tj T*
+() Tj T*
+(4. Record retention. KYC records, identification documents and records of transactions must be) Tj T*
+(preserved for at least five years after the business relationship with the customer has ended) Tj T*
+(or the account has been closed, whichever is later. Records must not be destroyed earlier.) Tj T*
+() Tj T*
+(5. Periodic updation of KYC. KYC must be updated at least once every two years for high-risk) Tj T*
+(customers, once every eight years for medium-risk customers and once every ten years for low-) Tj T*
+(risk customers.) Tj T*
+() Tj T*
+(6. Consent and data sharing. Customer data may be shared with a third party only with the) Tj T*
+(customer's explicit, informed consent and only for the purpose stated at the time of consent.) Tj T*
+(Customer data must never be used for marketing or shared with marketing partners without a) Tj T*
+(separate opt-in consent.) Tj T*
+() Tj T*
+(7. Vendor oversight and audit. Vendors must give the Bank and the Reserve Bank of India) Tj T*
+(unrestricted access to premises, systems and records for audit and inspection. Vendors must not) Tj T*
+(sub-contract any processing of customer data without the Bank's prior written approval.) Tj T*
+() Tj T*
+(8. Security incidents. Vendors must report any security incident or data breach affecting) Tj T*
+(customer data to the Bank within six hours of detection.) Tj T*
+() Tj T*
+(9. Data localisation. All customer data, including backups, must be stored only on systems) Tj T*
+(located in India.) Tj T*
+() Tj T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000185 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2906
+%%EOF

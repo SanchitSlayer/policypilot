@@ -4,7 +4,7 @@ from httpx import AsyncClient
 
 from app.core.config import Settings, get_settings
 from app.main import app
-from tests.pdf_factory import make_pdf
+from app.utils.simple_pdf import make_pdf
 
 
 async def test_non_pdf_extension_is_rejected(client: AsyncClient) -> None:

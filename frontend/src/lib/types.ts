@@ -91,3 +91,74 @@ export interface DoneEvent {
 export interface ErrorEvent {
   detail: string;
 }
+
+// Contract review (POST /review, GET /review/{id})
+
+export type ReviewStatus = "running" | "completed" | "failed";
+export type FindingStatus = "compliant" | "non_compliant" | "needs_review";
+export type OverallRisk = "low" | "medium" | "high";
+
+export interface ReviewRequest {
+  document_id: string;
+  provider?: ProviderName;
+}
+
+export interface ReviewCreated {
+  review_id: string;
+  status: ReviewStatus;
+}
+
+export interface PolicyCitation {
+  source_id: string;
+  document_id: string;
+  document_title: string;
+  page_number: number;
+  snippet: string;
+}
+
+export interface FindingOut {
+  clause_id: string;
+  clause_title: string;
+  clause_page: number | null;
+  status: FindingStatus;
+  reason: string;
+  policy_citations: PolicyCitation[];
+}
+
+export interface ReviewStep {
+  index: number;
+  tool: string;
+  description: string;
+  ok: boolean;
+  at: string;
+}
+
+export interface ReviewReport {
+  contract_id: string;
+  contract_title: string;
+  provider: string;
+  model: string | null;
+  summary: string;
+  overall_risk: OverallRisk;
+  findings: FindingOut[];
+  steps_used: number;
+  tokens_used: number;
+  message: string | null;
+  prompt_version: string | null;
+}
+
+export interface ReviewOut {
+  id: string;
+  contract_id: string;
+  contract_title: string;
+  provider: string;
+  status: ReviewStatus;
+  steps: ReviewStep[];
+  findings: FindingOut[];
+  steps_used: number;
+  tokens_used: number;
+  message: string | null;
+  created_at: string;
+  completed_at: string | null;
+  report: ReviewReport | null;
+}

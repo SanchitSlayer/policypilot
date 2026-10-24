@@ -8,6 +8,9 @@ import type {
   DocumentOut,
   DoneEvent,
   ErrorEvent,
+  ReviewCreated,
+  ReviewOut,
+  ReviewRequest,
   TokenEvent,
 } from "./types";
 
@@ -151,3 +154,9 @@ export async function streamChat(
   });
   if (streamError) throw new ApiError(502, streamError);
 }
+
+// --- Contract review ----------------------------------------------------------------------
+
+export const startReview = (body: ReviewRequest) => request<ReviewCreated>("/review", json(body));
+
+export const getReview = (id: string) => request<ReviewOut>(`/review/${id}`);

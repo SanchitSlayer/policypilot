@@ -2,7 +2,7 @@
 
 PolicyPilot is an AI compliance copilot for B2B compliance, ops and legal teams. Upload policy and regulatory PDFs (for example the RBI KYC Master Direction or internal SOPs), ask questions in plain language, and get streamed answers with page-level citations, using OpenAI, Anthropic Claude or Google Gemini per request. A tool-calling Contract Review agent checks a contract's clauses against your stored policies and returns a structured compliance checklist, and an admin dashboard tracks requests, tokens, latency and cost per provider.
 
-> Status: in development (Phases 0–3 done: ingestion, RAG chat API and web UI). See [CLAUDE.md](CLAUDE.md) for the roadmap.
+> Status: in development (Phases 0–4 done: ingestion, RAG chat, web UI and contract review agent). See [CLAUDE.md](CLAUDE.md) for the roadmap.
 
 ## Tech stack
 
@@ -32,6 +32,25 @@ Open http://localhost:3000:
 
 - **Documents**: drag and drop PDFs (policy or contract); the table shows pages, chunks and live processing status.
 - **Chat**: pick a provider (OpenAI, Claude, Gemini, or Fake for offline use), optionally limit the search to some documents, and ask. Answers stream in with clickable `[n]` citations; the Sources panel shows the document, page and exact passage.
+
+### Contract review agent
+
+Upload a contract with type **Contract**, then open **Contract Review**, pick it and a provider, and click **Run review**. A tool-calling agent:
+
+1. `list_contract_clauses`: splits the contract into clauses (numbered headings, falling back to paragraphs)
+2. `search_policies`: searches only the policy documents for each clause's obligations
+3. `record_finding`: records `compliant`, `non_compliant` or `needs_review` with a reason and policy citations
+4. `finish_review`: writes the summary once every clause has a finding
+
+Guardrails: arguments are validated with Pydantic and errors are returned to the model so it can correct itself; unknown tools, unknown clause ids and citations to sources it never retrieved are rejected; `non_compliant` requires a citation; the loop is capped by `MAX_AGENT_STEPS` and `AGENT_TIMEOUT_SECONDS`, and any clause left without a finding is marked `needs_review` with an explanation. Overall risk is `high` if any clause is non-compliant, `medium` if any needs review, otherwise `low`. Works with OpenAI, Claude and Gemini; the Fake provider runs an offline demo agent.
+
+Demo data (fictional, with five deliberate problems in the contract):
+
+```bash
+cd backend && .venv/bin/python -m app.scripts.make_sample_data   # writes ../sample_data/*.pdf
+curl -F "file=@../sample_data/sample_internal_kyc_data_policy.pdf" -F "doc_type=policy" http://localhost:8000/documents
+curl -F "file=@../sample_data/sample_vendor_kyc_agreement.pdf" -F "doc_type=contract" http://localhost:8000/documents
+```
 
 ### Ingest documents
 

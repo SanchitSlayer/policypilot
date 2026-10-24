@@ -3,42 +3,19 @@
 import { MessageSquarePlus, ShieldCheck, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { DocumentFilter, PROVIDERS, ProviderSelect } from "@/components/chat/ChatControls";
+import { DocumentFilter, ProviderSelect } from "@/components/chat/ChatControls";
 import { CitationsPanel } from "@/components/chat/CitationsPanel";
 import { Composer } from "@/components/chat/Composer";
 import { MessageList } from "@/components/chat/MessageList";
 import { useChat } from "@/hooks/useChat";
 import { useDocuments } from "@/hooks/useDocuments";
-import type { ProviderName } from "@/lib/types";
-
-const PROVIDER_KEY = "policypilot.provider";
+import { useStoredProvider } from "@/hooks/useStoredProvider";
 
 const EXAMPLES = [
   "What documents are valid as proof of address under KYC rules?",
   "How long must customer records be preserved?",
   "When must KYC be updated for high-risk customers?",
 ];
-
-function useStoredProvider(): [ProviderName, (p: ProviderName) => void] {
-  const [provider, setProvider] = useState<ProviderName>("openai");
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(PROVIDER_KEY);
-      if (PROVIDERS.some((p) => p.value === stored)) setProvider(stored as ProviderName);
-    } catch {
-      // storage unavailable (private mode); keep the default
-    }
-  }, []);
-  const update = (p: ProviderName) => {
-    setProvider(p);
-    try {
-      localStorage.setItem(PROVIDER_KEY, p);
-    } catch {
-      // ignore
-    }
-  };
-  return [provider, update];
-}
 
 export default function ChatPage() {
   const [provider, setProvider] = useStoredProvider();
