@@ -14,6 +14,9 @@ class ChatRequest(BaseModel):
     document_ids: list[uuid.UUID] | None = Field(
         default=None, description="Restrict retrieval to these documents"
     )
+    persist: bool = Field(
+        default=True, description="Save the turn to conversation history (eval runs send false)"
+    )
 
 
 class SourceOut(BaseModel):

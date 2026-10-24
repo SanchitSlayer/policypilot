@@ -36,10 +36,13 @@ services:
       # Inside the compose network the databases are reached by service name.
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-policypilot}:${POSTGRES_PASSWORD:-policypilot}@postgres:5432/${POSTGRES_DB:-policypilot}
       MONGO_URL: mongodb://mongo:27017
+      SAMPLE_DATA_DIR: /sample_data
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - ./sample_data:/sample_data
+      - ./eval:/eval
     depends_on:
       postgres:
         condition: service_healthy

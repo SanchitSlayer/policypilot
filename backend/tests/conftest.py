@@ -24,6 +24,16 @@ from app.services.conversations import InMemoryConversationStore
 from app.services.usage_stats import ensure_indexes
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
+# CI sets this so a missing database fails the run instead of silently skipping tests.
+REQUIRE_TEST_DBS = os.getenv("REQUIRE_TEST_DBS", "").lower() in {"1", "true", "yes"}
+
+
+def _unavailable(message: str) -> None:
+    if REQUIRE_TEST_DBS:
+        pytest.fail(message)
+    pytest.skip(message)
+
+
 TEST_MONGO_URL = os.getenv("TEST_MONGO_URL", "mongodb://localhost:27017")
 TEST_MONGO_DB = "policypilot_test"
 TEST_DATABASE_URL = os.getenv(
@@ -86,9 +96,7 @@ def migrated_database_url() -> Iterator[str]:
     try:
         asyncio.run(_ensure_database(TEST_DATABASE_URL))
     except (OSError, asyncpg.PostgresError, TimeoutError) as exc:
-        pytest.skip(
-            f"Postgres not reachable for DB tests ({exc}); run `docker compose up postgres`"
-        )
+        _unavailable(f"Postgres not reachable ({exc}); run `docker compose up postgres`")
 
     config = Config(str(BACKEND_DIR / "alembic.ini"))
     config.set_main_option("script_location", str(BACKEND_DIR / "alembic"))
@@ -134,7 +142,7 @@ async def mongo_db() -> AsyncIterator[AsyncIOMotorDatabase]:
         await mongo.admin.command("ping")
     except Exception as exc:
         mongo.close()
-        pytest.skip(f"MongoDB not reachable ({exc}); run `docker compose up mongo`")
+        _unavailable(f"MongoDB not reachable ({exc}); run `docker compose up mongo`")
     await mongo.drop_database(TEST_MONGO_DB)
     db = mongo[TEST_MONGO_DB]
     await ensure_indexes(db)

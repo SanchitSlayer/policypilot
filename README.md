@@ -2,7 +2,7 @@
 
 PolicyPilot is an AI compliance copilot for B2B compliance, ops and legal teams. Upload policy and regulatory PDFs (for example the RBI KYC Master Direction or internal SOPs), ask questions in plain language, and get streamed answers with page-level citations, using OpenAI, Anthropic Claude or Google Gemini per request. A tool-calling Contract Review agent checks a contract's clauses against your stored policies and returns a structured compliance checklist, and an admin dashboard tracks requests, tokens, latency and cost per provider.
 
-> Status: in development (Phases 0–5 done: ingestion, RAG chat, web UI, contract review agent, usage dashboard). See [CLAUDE.md](CLAUDE.md) for the roadmap.
+> Status: in development (Phases 0–6 done: ingestion, RAG chat, web UI, contract review agent, usage dashboard, tests/CI/evaluation). See [CLAUDE.md](CLAUDE.md) for the roadmap.
 
 ## Tech stack
 
@@ -13,9 +13,12 @@ FastAPI · Pydantic v2 · SQLAlchemy 2.0 (async) + Alembic · PostgreSQL 16 + pg
 Requirements: Docker Desktop (or Docker Engine with Compose v2).
 
 ```bash
-cp .env.example .env          # add API keys later; not needed for Phase 0
-docker compose up --build
+cp .env.example .env          # API keys optional: the Fake provider works offline
+make up                       # docker compose up --build
+make seed                     # load the fictional demo policies and contract
 ```
+
+`make help` lists every command (`test`, `lint`, `format`, `eval`, `migrate`, `logs`, `down`).
 
 | Service  | URL                            |
 | -------- | ------------------------------ |
@@ -89,20 +92,19 @@ curl -X POST http://localhost:8000/chat -H 'content-type: application/json' \
 
 Answers cite sources inline as `[1]`, `[2]`; each citation maps to a document title, page number and snippet. If nothing relevant is retrieved, the API answers "I couldn't find this in the uploaded documents." without calling the model.
 
-### Backend tests
-
-Tests use fake embeddings and a fake LLM, so no API keys are needed. Database tests run against `policypilot_test` databases on the compose Postgres and MongoDB and are skipped if those are not running.
+## Testing and CI
 
 ```bash
-cd backend
-python3.12 -m venv .venv && .venv/bin/pip install -e ".[dev]"
-.venv/bin/pytest
+make test        # backend pytest (92 tests, ~94% coverage) + frontend Vitest
+make lint        # ruff lint + format check, ESLint, tsc
 ```
 
-### Frontend checks
+Backend tests use fake embeddings and a scripted fake LLM, so no API keys are needed; database tests run against `policypilot_test` databases on the compose Postgres and MongoDB. GitHub Actions run the same checks on every pull request: [`backend.yml`](.github/workflows/backend.yml) (ruff, migrations, pytest with coverage against pgvector and MongoDB service containers) and [`frontend.yml`](.github/workflows/frontend.yml) (npm ci, ESLint, tsc, Vitest, next build).
+
+## RAG evaluation
+
+[`eval/run_eval.py`](eval/run_eval.py) asks 47 questions (41 answerable with expected pages, 6 unanswerable) through `/chat` and reports retrieval hit@1/@3/@k and MRR, citation accuracy, no-answer accuracy, latency, tokens and estimated cost per provider. See [eval/README.md](eval/README.md).
 
 ```bash
-cd frontend
-npm install
-npm run lint && npm run typecheck && npm test   # ESLint, tsc, Vitest + Testing Library
+make eval PROVIDERS="openai anthropic gemini"
 ```

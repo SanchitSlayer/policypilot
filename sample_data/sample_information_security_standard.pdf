@@ -1,0 +1,96 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 748 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(NORTHWIND BANK LIMITED) Tj T*
+(INFORMATION SECURITY STANDARD \(FICTIONAL SAMPLE, VERSION 2.0\)) Tj T*
+() Tj T*
+(1. Scope. This standard applies to all Bank systems and to every vendor system that stores or) Tj T*
+(processes Bank data.) Tj T*
+() Tj T*
+(2. Access control. Multi-factor authentication is mandatory for all remote access and for all) Tj T*
+(privileged accounts. Privileged access rights are reviewed every quarter. Access for employees) Tj T*
+(who leave the Bank must be revoked within 24 hours of their exit. Passwords must be at least 14) Tj T*
+(characters long; periodic forced password changes are not required, but passwords must be) Tj T*
+(changed immediately if a compromise is suspected.) Tj T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 751 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(3. Encryption. Data at rest must be encrypted with AES-256. Data in transit must use TLS 1.2 or) Tj T*
+(higher. Encryption keys must be stored in a hardware security module or a managed key service) Tj T*
+(and rotated at least once a year.) Tj T*
+() Tj T*
+(4. Logging and monitoring. Security logs from all critical systems must be retained for at) Tj T*
+(least 180 days and must be monitored by the security operations centre around the clock.) Tj T*
+() Tj T*
+(5. Backups and recovery. Critical systems are backed up every day, and restores are tested) Tj T*
+(every quarter. For critical systems the recovery point objective \(RPO\) is four hours and the) Tj T*
+(recovery time objective \(RTO\) is eight hours.) Tj T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 685 >>
+stream
+BT
+/F1 10 Tf
+12 TL
+50 750 Td
+(6. Incident response. Security incidents are classified by severity. Cyber security incidents) Tj T*
+(must be reported to CERT-In and to the Reserve Bank of India within six hours of being noticed.) Tj T*
+(Customers whose personal data is affected by a breach must be informed within 72 hours.) Tj T*
+() Tj T*
+(7. Vendor security. Critical vendors must undergo a security assessment every year and must) Tj T*
+(hold a current ISO 27001 certificate or a SOC 2 Type II report.) Tj T*
+() Tj T*
+(8. Exceptions. Exceptions to this standard must be approved by the Chief Information Security) Tj T*
+(Officer \(CISO\) and are valid for at most 90 days.) Tj T*
+ET
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000127 00000 n 
+0000000197 00000 n 
+0000000323 00000 n 
+0000001122 00000 n 
+0000001248 00000 n 
+0000002050 00000 n 
+0000002176 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+2912
+%%EOF
