@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 
 from app.api.deps import (
@@ -11,6 +11,7 @@ from app.api.deps import (
     SettingsDep,
     UsageLoggerDep,
 )
+from app.core.rate_limit import chat_limit, limiter
 from app.llm.base import LLMError, ProviderNotConfiguredError
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.services.chat import ChatService, PreparedChat
@@ -38,10 +39,11 @@ ChatServiceDep = Annotated[ChatService, Depends(get_chat_service)]
 
 
 @router.post("", response_model=ChatResponse)
-async def chat(request: ChatRequest, service: ChatServiceDep) -> ChatResponse:
+@limiter.shared_limit(chat_limit, scope="chat")
+async def chat(request: Request, body: ChatRequest, service: ChatServiceDep) -> ChatResponse:
     """Answer a question with citations (non-streaming; used by tests and the eval script)."""
     try:
-        return await service.answer(request)
+        return await service.answer(body)
     except ProviderNotConfiguredError as exc:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     except LLMError as exc:
@@ -53,7 +55,10 @@ async def chat(request: ChatRequest, service: ChatServiceDep) -> ChatResponse:
     response_class=StreamingResponse,
     responses={200: {"content": {"text/event-stream": {}}}},
 )
-async def chat_stream(request: ChatRequest, service: ChatServiceDep) -> StreamingResponse:
+@limiter.shared_limit(chat_limit, scope="chat")
+async def chat_stream(
+    request: Request, body: ChatRequest, service: ChatServiceDep
+) -> StreamingResponse:
     """Stream the answer as Server-Sent Events.
 
     Events: `token` {text} (repeated), then `citations` {conversation_id, citations, sources},
@@ -62,7 +67,7 @@ async def chat_stream(request: ChatRequest, service: ChatServiceDep) -> Streamin
     """
     try:
         # Retrieval happens before streaming so setup errors get a proper HTTP status.
-        prepared: PreparedChat = await service.prepare(request)
+        prepared: PreparedChat = await service.prepare(body)
     except ProviderNotConfiguredError as exc:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 

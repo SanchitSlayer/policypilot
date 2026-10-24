@@ -1,0 +1,74 @@
+name: Deploy
+
+# Releases to Cloud Run when a version tag is pushed (git tag v2 && git push origin v2).
+# Authenticates with Workload Identity Federation: no service account keys are stored.
+# One-time setup and the required repository variables: docs/DEPLOY.md.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # lets the job request a GitHub OIDC token for Google Cloud
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  REGION: ${{ vars.GCP_REGION }}
+  IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/policypilot
+  TAG: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
+
+jobs:
+  deploy:
+    name: Build and deploy to Cloud Run
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: vars.GCP_PROJECT_ID != ''
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build backend image
+        run: gcloud builds submit backend --tag "$IMAGE/backend:$TAG"
+
+      - name: Run database migrations
+        run: |
+          gcloud run jobs update policypilot-migrate --image "$IMAGE/backend:$TAG" --region "$REGION"
+          gcloud run jobs execute policypilot-migrate --region "$REGION" --wait
+
+      - name: Deploy API
+        run: |
+          gcloud run deploy policypilot-api --image "$IMAGE/backend:$TAG" --region "$REGION"
+          echo "API_URL=$(gcloud run services describe policypilot-api --region "$REGION" --format='value(status.url)')" >> "$GITHUB_ENV"
+
+      - name: Smoke-test API
+        run: curl --fail --retry 5 --retry-delay 5 --retry-all-errors "$API_URL/health"
+
+      - name: Build frontend image
+        run: |
+          gcloud builds submit frontend --config deploy/cloudbuild.frontend.yaml \
+            --substitutions "_IMAGE=$IMAGE/frontend:$TAG,_API_URL=$API_URL"
+
+      - name: Deploy web app
+        run: gcloud run deploy policypilot-web --image "$IMAGE/frontend:$TAG" --region "$REGION"
+
+      - name: Summary
+        run: |
+          WEB_URL=$(gcloud run services describe policypilot-web --region "$REGION" --format='value(status.url)')
+          {
+            echo "### Deployed $TAG"
+            echo "- Web app: $WEB_URL"
+            echo "- API: $API_URL ($API_URL/docs)"
+          } >> "$GITHUB_STEP_SUMMARY"

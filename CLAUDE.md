@@ -63,7 +63,7 @@ policypilot/
 4. Contract Review agent (tool calling) — done
 5. MongoDB logging, conversation history, Admin dashboard — done
 6. Testing, CI, RAG evaluation — done
-7. Cloud Run deploy, README, demo polish
+7. Cloud Run deploy, README, demo polish — done (deploy itself pending a GCP project; real-provider eval pending API keys)
 
 ## Dev commands (Makefile; everything runs in the compose containers)
 - `make up` / `make down` / `make logs`

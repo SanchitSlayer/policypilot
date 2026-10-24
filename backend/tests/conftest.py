@@ -17,6 +17,7 @@ from app.api.chat import get_conversation_store
 from app.api.deps import get_embedder, get_mongo_database, get_session_factory, get_usage_logger
 from app.core.config import get_settings
 from app.core.db import get_db_session
+from app.core.rate_limit import limiter
 from app.llm.embeddings import FakeEmbeddingProvider
 from app.llm.usage import InMemoryUsageLogger
 from app.main import app
@@ -40,6 +41,15 @@ TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
     "postgresql+asyncpg://policypilot:policypilot@localhost:5432/policypilot_test",
 )
+
+
+@pytest.fixture(autouse=True)
+def _rate_limits_off() -> Iterator[None]:
+    """Rate limiting is tested on its own; elsewhere it would make tests order-dependent."""
+    limiter.enabled = False
+    yield
+    limiter.enabled = False
+    limiter.reset()
 
 
 @pytest.fixture

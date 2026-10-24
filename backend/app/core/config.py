@@ -44,6 +44,14 @@ class Settings(BaseSettings):
     chat_history_turns: int = 4
     citation_snippet_chars: int = 240
 
+    # Abuse protection ("N/period" syntax; per client IP)
+    rate_limit_enabled: bool = True
+    rate_limit_storage_uri: str = "memory://"  # e.g. redis://host:6379 to share across instances
+    rate_limit_chat: str = "20/minute"
+    rate_limit_review: str = "5/minute"
+    rate_limit_upload: str = "10/minute"
+    max_json_body_kb: int = 64
+
     # Observability
     pricing_file: str = str(Path(__file__).resolve().parents[2] / "config" / "pricing.yaml")
     conversation_title_chars: int = 80
