@@ -2,7 +2,7 @@
 
 PolicyPilot is an AI compliance copilot for B2B compliance, ops and legal teams. Upload policy and regulatory PDFs (for example the RBI KYC Master Direction or internal SOPs), ask questions in plain language, and get streamed answers with page-level citations, using OpenAI, Anthropic Claude or Google Gemini per request. A tool-calling Contract Review agent checks a contract's clauses against your stored policies and returns a structured compliance checklist, and an admin dashboard tracks requests, tokens, latency and cost per provider.
 
-> Status: early development (Phase 0: scaffolding). See [CLAUDE.md](CLAUDE.md) for the roadmap.
+> Status: in development (Phase 1 of 7 done: document ingestion). See [CLAUDE.md](CLAUDE.md) for the roadmap.
 
 ## Tech stack
 
@@ -24,7 +24,21 @@ docker compose up --build
 | API docs | http://localhost:8000/docs     |
 | Health   | http://localhost:8000/health   |
 
-The backend container runs `alembic upgrade head` on start, which enables the `vector` extension.
+The backend container runs `alembic upgrade head` on start (pgvector extension, documents and chunks tables).
+
+### Ingest documents
+
+Embeddings use OpenAI by default (`OPENAI_API_KEY`); set `EMBEDDING_PROVIDER=fake` to run fully offline.
+
+```bash
+# Upload one PDF over HTTP (doc_type: policy | contract)
+curl -F "file=@sample_data/rbi_kyc.pdf" -F "doc_type=policy" http://localhost:8000/documents
+
+# Or ingest a whole folder from the host (skips files already ingested; --force to redo)
+cd backend && .venv/bin/python -m app.scripts.ingest_folder ../sample_data
+```
+
+PDFs are split per page into ~500-token chunks with 80-token overlap (configurable via `CHUNK_SIZE_TOKENS` / `CHUNK_OVERLAP_TOKENS`), so every chunk carries exactly one page number for citations.
 
 ### Backend tests (no databases needed)
 

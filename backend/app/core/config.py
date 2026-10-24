@@ -36,6 +36,17 @@ class Settings(BaseSettings):
     embedding_provider: str = "openai"
     embedding_model: str = ""
     embedding_dim: int = 1536
+    embedding_batch_size: int = 64
+
+    # Ingestion
+    max_upload_mb: float = 20.0
+    chunk_size_tokens: int = 500
+    chunk_overlap_tokens: int = 80
+    tokenizer_encoding: str = "cl100k_base"
+
+    @property
+    def max_upload_bytes(self) -> int:
+        return int(self.max_upload_mb * 1024 * 1024)
 
 
 @lru_cache
