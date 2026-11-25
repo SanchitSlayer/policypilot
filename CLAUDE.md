@@ -1,6 +1,6 @@
 # PolicyPilot — project memory
 
-PolicyPilot is a portfolio project for an AI Application Engineer (LLM / Full-Stack) internship. Build it like a small production B2B product: clean code, tests, typed interfaces, clear README.
+PolicyPilot is an AI compliance copilot that answers questions about policy and regulatory PDFs with page-level citations and reviews contracts against those policies. Build it like a small production B2B product: clean code, tests, typed interfaces, clear README.
 
 ## Product
 PolicyPilot is an AI compliance copilot for B2B teams (compliance, ops, legal).
